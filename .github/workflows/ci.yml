@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: ${{ matrix.mode }} (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both are Apple Silicon runners
+        os: [macos-15, macos-26]
+        mode: [nolibs, static, static-x86_64, static-dyld]
+    runs-on: ${{ matrix.os }}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Ninja
+        run: command -v ninja || brew install ninja
+
+      - name: Install Rosetta
+        if: matrix.mode == 'static-x86_64'
+        run: arch -x86_64 /usr/bin/true 2>/dev/null || sudo softwareupdate --install-rosetta --agree-to-license
+
+      - name: Configure, build and test
+        run: cmake --workflow --preset ${{ matrix.mode }}

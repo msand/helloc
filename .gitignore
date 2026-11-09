@@ -1,0 +1,9 @@
+# Build directories (CMake presets and CLion)
+/build/
+/cmake-build-*/
+
+# IDE settings (CLion)
+/.idea/
+
+# macOS Finder metadata
+.DS_Store

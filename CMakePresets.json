@@ -1,0 +1,84 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "nolibs",
+      "displayName": "nolibs (arm64, dyld, no dylibs)",
+      "inherits": "base",
+      "cacheVariables": { "HELLOC_MODE": "nolibs" }
+    },
+    {
+      "name": "static",
+      "displayName": "static (arm64 -static, DEVELOPMENT kernel only)",
+      "inherits": "base",
+      "cacheVariables": { "HELLOC_MODE": "static" }
+    },
+    {
+      "name": "static-x86_64",
+      "displayName": "static-x86_64 (x86_64 -static, Rosetta)",
+      "inherits": "base",
+      "cacheVariables": { "HELLOC_MODE": "static-x86_64" }
+    },
+    {
+      "name": "static-dyld",
+      "displayName": "static-dyld (arm64 -static -pie, converted for dyld)",
+      "inherits": "base",
+      "cacheVariables": { "HELLOC_MODE": "static-dyld" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "nolibs", "configurePreset": "nolibs" },
+    { "name": "static", "configurePreset": "static" },
+    { "name": "static-x86_64", "configurePreset": "static-x86_64" },
+    { "name": "static-dyld", "configurePreset": "static-dyld" }
+  ],
+  "testPresets": [
+    { "name": "nolibs", "configurePreset": "nolibs", "output": { "outputOnFailure": true } },
+    { "name": "static", "configurePreset": "static", "output": { "outputOnFailure": true } },
+    { "name": "static-x86_64", "configurePreset": "static-x86_64", "output": { "outputOnFailure": true } },
+    { "name": "static-dyld", "configurePreset": "static-dyld", "output": { "outputOnFailure": true } }
+  ],
+  "workflowPresets": [
+    {
+      "name": "nolibs",
+      "steps": [
+        { "type": "configure", "name": "nolibs" },
+        { "type": "build", "name": "nolibs" },
+        { "type": "test", "name": "nolibs" }
+      ]
+    },
+    {
+      "name": "static",
+      "steps": [
+        { "type": "configure", "name": "static" },
+        { "type": "build", "name": "static" },
+        { "type": "test", "name": "static" }
+      ]
+    },
+    {
+      "name": "static-x86_64",
+      "steps": [
+        { "type": "configure", "name": "static-x86_64" },
+        { "type": "build", "name": "static-x86_64" },
+        { "type": "test", "name": "static-x86_64" }
+      ]
+    },
+    {
+      "name": "static-dyld",
+      "steps": [
+        { "type": "configure", "name": "static-dyld" },
+        { "type": "build", "name": "static-dyld" },
+        { "type": "test", "name": "static-dyld" }
+      ]
+    }
+  ]
+}
